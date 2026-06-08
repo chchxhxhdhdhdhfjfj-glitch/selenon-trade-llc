@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover" />
+  <title>Memory Tower · 星际记忆翻翻乐</title>
+  <link rel="stylesheet" href="./src/styles/main.css" />
+</head>
+<body>
+  <div class="app">
+    <div class="stars"></div><div class="stars2"></div><div class="stars3"></div>
+    <div class="celebrate" id="celebrate"></div>
+    <div class="special-fx" id="specialFx"></div>
+
+    <div class="screen active" id="homeScreen">
+      <div class="glass hero compact-hero hero-hot">
+        <div class="hero-badge">HOT MINI GAME</div>
+        <div class="logo">🛸🧠✨</div>
+        <div class="name">Memory Tower</div>
+        <div class="tag">星际记忆翻翻乐 · 3 秒上手，越玩越上头的记忆闯关挑战</div>
+        <div class="resource-row">
+          <div class="glass resource"><div class="k">广告补给</div><div class="v" id="homeSupply">已启用</div></div>
+          <div class="glass resource"><div class="k">最高关卡</div><div class="v" id="homeBestLevel">1</div></div>
+          <div class="glass resource"><div class="k">限时最高分</div><div class="v" id="homeBestTimed">0</div></div>
+        </div>
+        <div class="resource-row">
+          <div class="glass resource"><div class="k">无尽最高轮次</div><div class="v" id="homeBestEndless">0</div></div>
+          <div class="glass resource"><div class="k">连续签到</div><div class="v" id="homeSignInStreak">0 天</div></div>
+          <div class="glass resource"><div class="k">连胜次数</div><div class="v" id="homeWinStreak">0</div></div>
+        </div>
+        <div class="glass item chapter-badge" id="homeCrownBadge" style="display:none; margin-top:12px;">
+          <div class="item-title">终章征服徽章</div>
+          <div class="item-sub" id="homeCrownText">已征服终极记忆塔，20 关正式版已通关</div>
+        </div>
+        <div class="glass item" style="margin-top:12px;">
+          <div class="item-title">章节进度</div>
+          <div class="item-sub" id="homeChapterText">新手星区 · 第 1-4 关</div>
+        </div>
+        <div class="stats-grid" style="margin-top:12px;">
+          <div class="glass stat-card"><div class="item-title">战绩总览</div><div class="item-sub" id="homeStatsText">最高关卡 0 · 无尽 0 轮 · 限时 0 分</div></div>
+          <div class="glass stat-card"><div class="item-title">成长记录</div><div class="item-sub" id="homeGrowthText">成长任务进度持续累积 · 最佳连胜 0</div></div>
+          <div class="glass stat-card"><div class="item-title">道具背包</div><div class="item-sub" id="homeBagText">找一对 x0 · 护盾 x0 · 冻结 x0</div></div>
+        </div>
+        <div class="glass item" style="margin-top:12px;">
+          <div class="item-title">当前目标</div>
+          <div class="goal-focus" id="homeGoalCard">
+            <div class="goal-kicker" id="homeGoalKicker">推荐优先</div>
+            <div class="goal-title" id="homeGoalTitle">先完成今日第一个任务目标</div>
+            <div class="goal-desc" id="homeGoalDesc">通关第 3 关、使用 1 次道具、达成 2 连胜，先把今天奖励拿满。</div>
+          </div>
+        </div>
+        <div class="glass item" style="margin-top:12px;">
+          <div class="item-title">每日任务</div>
+          <div class="item-sub" id="homeTasksText">今日通关第 3 关 / 使用 1 次道具 / 达成 2 连胜</div>
+          <div class="task-cards" id="dailyTaskCards"></div>
+          <div class="item-sub" id="homeTaskCountdown" style="margin-top:8px; color:#fde68a;">任务将在 23:59:59 后刷新</div>
+        </div>
+        <div class="glass item" style="margin-top:12px;">
+          <div class="item-title">新手七日成长任务</div>
+          <div class="item-sub" id="homeNewbieText">第 1 天：完成 1 次翻牌</div>
+          <div class="newbie-progress" id="newbieProgress"></div>
+        </div>
+        <div class="glass item" style="margin-top:12px;">
+          <div class="item-title">成就墙</div>
+          <div class="achievements" id="achievementsWall"></div>
+        </div>
+        <div class="resource-row">
+          <div class="glass resource"><div class="k">今日状态</div><div class="v" id="homeDailyStatus">待挑战</div></div>
+        </div>
+      </div>
+
+      <div class="glass sign-panel">
+        <div class="panel-title-row" data-guide="signin">
+          <div>
+            <div class="panel-title">七日签到</div>
+            <div class="panel-sub">连续回来玩，奖励越来越高</div>
+          </div>
+          <button class="btn-good small" id="btnDaily">签到领道具</button>
+        </div>
+        <div class="sign-grid" id="signGrid"></div>
+      </div>
+
+      <div class="mode-switch glass" data-guide="mode-switch">
+        <button class="mode-btn active" id="btnModeClassic">经典模式</button>
+        <button class="mode-btn" id="btnModeTimed">限时模式</button>
+      </div>
+
+      <div class="menu compact-menu" data-guide="start-area">
+        <button class="btn-main btn-xl" id="btnStart">立即开玩</button>
+        <div class="split">
+          <button class="btn-gold" id="btnShopReward">广告领道具包</button>
+          <button class="btn-muted" id="btnSound">音效：开</button>
+        </div>
+        <div class="split">
+          <button class="btn-good" id="tutorialFab">新手引导</button>
+        </div>
+        <div class="split split-3" data-guide="tools-area">
+          <div class="glass quick-tip"><b>提示道具</b><span id="hintCostText">观看广告使用</span></div>
+          <div class="glass quick-tip"><b>找出一对</b><span id="revealPairCostText">优先消耗库存</span></div>
+          <div class="glass quick-tip"><b>额外预览</b><span id="previewCostText">观看广告使用</span></div>
+        </div>
+        <div class="split split-3">
+          <div class="glass quick-tip"><b>增加生命</b><span id="buyLifeCostText">观看广告使用</span></div>
+          <div class="glass quick-tip"><b>洗牌道具</b><span id="shuffleCostText">观看广告使用</span></div>
+          <div class="glass quick-tip"><b>护盾道具</b><span id="shieldCostText">优先消耗库存</span></div>
+        </div>
+        <div class="split split-3">
+          <div class="glass quick-tip"><b>冻结时间</b><span id="freezeCostText">优先消耗库存</span></div>
+          <div class="glass quick-tip"><b>每日挑战</b><span id="dailyChallengeText">经典模式通关第 3 关</span></div>
+          <div class="glass quick-tip"><b>奖励</b><span id="dailyChallengeRewardText">道具补给</span></div>
+        </div>
+        <div class="split split-3">
+          <div class="glass quick-tip"><b>连签奖励</b><span id="signInRewardText">第 1 天 +50</span></div>
+          <div class="glass quick-tip"><b>连胜奖励</b><span id="winStreakRewardText">每 2 连胜 +40</span></div>
+          <div class="glass quick-tip"><b>章节奖励</b><span id="chapterRewardText">章节通关 +120</span></div>
+        </div>
+        <div class="split">
+          <button class="btn-muted" id="btnResetSave">清空存档</button>
+        </div>
+      </div>
+
+      <div class="glass item" id="adsNoticeHome">
+        <div class="item-title">挑战节奏</div>
+        <div class="item-sub" id="adsNoticeHomeText">前期快速建立成就感，后期压缩预览时间，提高记忆压力。</div>
+      </div>
+
+      <div class="footnote">Memory Tower · v1.0.0-memory-tower · 现在就开始冲关，靠广告补给与签到道具完成翻盘，叠连胜、做签到、触发特殊牌效果。</div>
+    </div>
+
+    <div class="screen" id="gameScreen">
+      <div class="topbar">
+        <div class="glass levelbox"><div class="lv">当前关卡</div><div class="big">第 <span id="levelText">1</span> 关</div><div class="lv" id="chapterText" style="margin-top:6px;">新手星区 · 第 1-4 关</div></div>
+        <button class="btn-muted small" id="btnHomeBack">返回首页</button>
+      </div>
+
+      <div class="hud">
+        <div class="glass hudbox"><div class="k">步数</div><div class="v" id="movesText">0</div></div>
+        <div class="glass hudbox"><div class="k">错误</div><div class="v" id="errorsText">0</div></div>
+        <div class="glass hudbox"><div class="k">生命</div><div class="v" id="livesText">6</div></div>
+        <div class="glass hudbox"><div class="k">补给</div><div class="v" id="supplyText">广告</div></div>
+      </div>
+
+      <div class="glass streak-panel">
+        <div class="streak-top">
+          <span>连胜进度</span>
+          <b id="streakText">0 / 2</b>
+        </div>
+        <div class="streak-track"><div class="streak-fill" id="streakFill"></div></div>
+      </div>
+
+      <div class="glass timer-box" id="timerBox" style="display:none;">剩余时间：<span id="timerText">60</span>s</div>
+      <div class="glass timer-box" id="specialHintBox">特殊牌：💎 奖励牌 / 💣 炸弹牌 / ⏰ 时钟牌</div>
+      <div class="glass timer-box" id="toolStatusBox">道具状态：🛡️ 护盾 <span id="shieldStatusText">未激活</span> / ❄️ 冻结 <span id="freezeStatusText">未激活</span></div>
+
+      <div class="boardWrap"><div class="board" id="board"></div></div>
+
+      <div class="actionbar actionbar-2" data-guide="battle-actions">
+        <button class="btn-muted small" id="btnRestartLevel">重开本关</button>
+        <button class="btn-good small" id="btnHintBoost">提示（广告）</button>
+        <button class="btn-good small" id="btnRevealPair">找一对（缺库存）</button>
+        <button class="btn-gold small" id="btnPreviewBoost">预览 +1s（广告）</button>
+        <button class="btn-danger small" id="btnBuyLife">生命 +1（广告）</button>
+        <button class="btn-muted small" id="btnShuffleBoost">洗牌（广告）</button>
+        <button class="btn-good small" id="btnShieldBoost">护盾（缺库存）</button>
+        <button class="btn-gold small" id="btnFreezeBoost">冻结（缺库存）</button>
+        <button class="btn-muted small" id="btnRewardLives">广告+2生命</button>
+        <button class="btn-muted small" id="btnInterstitialTest">插屏测试</button>
+      </div>
+
+      <div class="glass banner-slot" id="bannerSlot">Banner 广告位已预留（暂未启用）</div>
+      <div class="footnote" id="adsNoticeGame">广告未接入时，奖励广告和插屏入口会自动隐藏。</div>
+    </div>
+
+    <div class="glass hint" id="hint">记住卡牌位置！</div>
+    <div class="glass toast" id="toast"></div>
+
+    <div class="overlay" id="overlay">
+      <div class="glass modal modal-polish">
+        <div class="final-emblem" id="finalEmblem" aria-hidden="true">👑 MEMORY TOWER 👑</div>
+        <div class="final-crown" id="finalCrown" aria-hidden="true">👑</div>
+        <div class="modal-badge" id="modalBadge">MISSION CLEAR</div>
+        <h2 id="modalTitle">结算</h2>
+        <div class="final-subtitle" id="finalSubtitle" aria-hidden="true">FINAL ASCENSION COMPLETE</div>
+        <p id="modalText"></p>
+        <div class="rewards" id="modalRewards"></div>
+        <div class="rewards chestDrops" id="modalDrops"></div>
+        <div class="chest-open-box" id="modalChestBox" style="display:none;">
+          <div class="chest-lid" id="modalChestBadge">✨ CHAPTER CHEST ✨</div>
+          <div class="chest-core">🎁</div>
+          <div class="chest-sub" id="modalChestText">宝箱开启中...</div>
+        </div>
+        <div class="modalStats" id="modalStats"></div>
+        <div class="modalBtns" id="modalBtns"></div>
+      </div>
+    </div>
+
+    <div class="guide-overlay" id="guideOverlay" style="display:none;">
+      <div class="guide-card glass" id="guideCard">
+        <div class="guide-badge">STEP <span id="guideStepText">1</span>/4</div>
+        <div class="guide-title" id="guideTitle">新手引导</div>
+        <div class="guide-text" id="guideText">这里会告诉你怎么玩。</div>
+        <div class="guide-actions">
+          <button class="btn-muted small" id="btnGuideSkip">跳过</button>
+          <button class="btn-main small" id="btnGuideNext">下一步</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script type="module" src="./src/scripts/app.js"></script>
+</body>
+</html>
